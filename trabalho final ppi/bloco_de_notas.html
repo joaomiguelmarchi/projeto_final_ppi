@@ -41,6 +41,8 @@
             list-style: none;
             padding: 0;
             width: 90%;
+            max-height: 500px;
+            overflow-y: auto;
         }
         li {
             background: white;
@@ -49,6 +51,7 @@
             border-radius: 5px;
             display: flex;
             justify-content: space-between;
+            align-items: center;
         }
         .botao {
             background-color: #dc3545;
@@ -61,6 +64,17 @@
         .botao:hover {
             background-color: #c82333;
         }
+        .botao-editar {
+            background-color: #007bff;
+            margin-right: 5px;
+        }
+        .botao-editar:hover {
+            background-color: #0056b3;
+        }
+        .botoes {
+            display: flex;
+            align-items: center;
+        }
     </style>
 </head>
 <body>
@@ -70,6 +84,8 @@
     <ul id="lista"></ul>
 
     <script>
+        let editIndex = null;
+
         document.addEventListener("DOMContentLoaded", function() {
             buscar();
         });
@@ -77,9 +93,16 @@
         function salvar() {
             const noteContent = document.getElementById("note").value;
             if (noteContent.trim() === "") return;
-            
+
             let notas = JSON.parse(localStorage.getItem("notas")) || [];
-            notas.push(noteContent);
+            
+            if (editIndex !== null) {
+                notas[editIndex] = noteContent;
+                editIndex = null;
+            } else {
+                notas.push(noteContent);
+            }
+            
             localStorage.setItem("notas", JSON.stringify(notas));
             document.getElementById("note").value = "";
             buscar();
@@ -91,16 +114,26 @@
             let notas = JSON.parse(localStorage.getItem("notas")) || [];
             notas.forEach((note, index) => {
                 let li = document.createElement("li");
-                li.innerHTML = `${note} <button class='botao' onclick='exclur(${index})'>Excluir</button>`;
+                li.innerHTML = `${note} 
+                                <div class="botoes">
+                                    <button class='botao botao-editar' onclick='editar(${index})'>Editar</button>
+                                    <button class='botao' onclick='excluir(${index})'>Excluir</button>
+                                </div>`;
                 lista.appendChild(li);
             });
         }
 
-        function exclur(index) {
+        function excluir(index) {
             let notas = JSON.parse(localStorage.getItem("notas")) || [];
             notas.splice(index, 1);
             localStorage.setItem("notas", JSON.stringify(notas));
             buscar();
+        }
+
+        function editar(index) {
+            let notas = JSON.parse(localStorage.getItem("notas")) || [];
+            document.getElementById("note").value = notas[index];
+            editIndex = index;
         }
     </script>
 </body>
