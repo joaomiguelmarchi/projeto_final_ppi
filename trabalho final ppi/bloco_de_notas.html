@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bloco de Notas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+        textarea {
+            width: 90%;
+            height: 100px;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+        }
+        button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            background-color: #28a745;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+            width: 90%;
+        }
+        li {
+            background: white;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .botao {
+            background-color: #dc3545;
+            border: none;
+            color: white;
+            padding: 5px;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+        .botao:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Bloco de Notas</h1>
+    <textarea id="note"></textarea>
+    <button onclick="salvar()">Salvar Nota</button>
+    <ul id="lista"></ul>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            buscar();
+        });
+
+        function salvar() {
+            const noteContent = document.getElementById("note").value;
+            if (noteContent.trim() === "") return;
+            
+            let notas = JSON.parse(localStorage.getItem("notas")) || [];
+            notas.push(noteContent);
+            localStorage.setItem("notas", JSON.stringify(notas));
+            document.getElementById("note").value = "";
+            buscar();
+        }
+
+        function buscar() {
+            const lista = document.getElementById("lista");
+            lista.innerHTML = "";
+            let notas = JSON.parse(localStorage.getItem("notas")) || [];
+            notas.forEach((note, index) => {
+                let li = document.createElement("li");
+                li.innerHTML = `${note} <button class='botao' onclick='exclur(${index})'>Excluir</button>`;
+                lista.appendChild(li);
+            });
+        }
+
+        function exclur(index) {
+            let notas = JSON.parse(localStorage.getItem("notas")) || [];
+            notas.splice(index, 1);
+            localStorage.setItem("notas", JSON.stringify(notas));
+            buscar();
+        }
+    </script>
+</body>
+</html>

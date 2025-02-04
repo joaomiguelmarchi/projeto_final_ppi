@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cronômetro</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        .tempo {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+        button {
+            font-size: 1em;
+            margin: 5px;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="tempo" id="tempo">00:00:00.000</div>
+    <button onclick="comecar()">Iniciar</button>
+    <button onclick="pausar()">Pausar</button>
+    <button onclick="resetar()">Reiniciar</button>
+    
+    <script>
+        let inicial;
+        let tempo = 0;
+        let intervalo;
+        let rodando = false;
+        
+        function comecar() {
+            if (!rodando) {
+                inicial = Date.now() - tempo;
+                intervalo = setInterval(atualizar, 10);
+                rodando = true;
+            }
+        }
+        
+        function pausar() {
+            if (rodando) {
+                clearInterval(intervalo);
+                tempo = Date.now() - inicial;
+                rodando = false;
+            }
+        }
+        
+        function resetar() {
+            clearInterval(intervalo);
+            tempo = 0;
+            document.getElementById("tempo").textContent = "00:00:00.000";
+            rodando = false;
+        }
+        
+        function atualizar() {
+            tempo = Date.now() - inicial;
+            let segundos = Math.floor(tempo / 1000);
+            let horas = Math.floor(segundos / 3600);
+            let minutos = Math.floor((segundos % 3600) / 60);
+            let segundo = segundos % 60;
+            let milisegundos = tempo % 1000;
+            document.getElementById("tempo").textContent =
+                String(horas).padStart(2, '0') + ":" +
+                String(minutos).padStart(2, '0') + ":" +
+                String(segundo).padStart(2, '0') + "." +
+                String(milisegundos).padStart(3, '0');
+        }
+    </script>
+</body>
+</html>
